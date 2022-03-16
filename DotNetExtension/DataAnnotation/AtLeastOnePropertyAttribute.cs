@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
 namespace DotNetExtension;
 
@@ -23,19 +22,18 @@ public class AtLeastOnePropertyAttribute : ValidationAttribute
         }
     }
 
-    public override bool IsValid(object value)
+    public override bool IsValid(object? value)
     {
-        PropertyInfo propertyInfo;
         foreach (string propertyName in PropertyList)
         {
-            propertyInfo = value.GetType().GetProperty(propertyName);
-
-            if (propertyInfo != null && propertyInfo.GetValue(value, null) != null)
+            var prop = 
+                value?.GetType()?.GetProperty(propertyName);
+            if (prop != null 
+                && prop.GetValue(value, null) != null)
             {
                 return true;
             }
         }
-
         return false;
     }
 }
